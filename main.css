@@ -1,3 +1,21 @@
+
+body #nprogress {
+  height: 3px;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 9999;
+}
+
+body #nprogress .peg {
+  box-shadow: none;
+}
+
+body #nprogress .bar {
+  height: 3px;
+}
+
 /*You may change your class*/
 .site-main {
   position: relative;

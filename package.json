@@ -1,6 +1,6 @@
 {
   "name": "@nitsantechnologies/vanilla-site-speed-booster",
-  "version": "1.2.4",
+  "version": "1.2.6",
   "description": "Vanilla Site Speed Booster",
   "style": "main.css",
   "main": "main.js",

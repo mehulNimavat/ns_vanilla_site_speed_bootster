@@ -75,7 +75,7 @@ class VanillaSiteSpeedBooster {
       });
 
       document.addEventListener('click', (event) => { 
-        if (event.target.href && !event.target.href.includes('tel:') && !event.target.href.includes('mailto:') && event.target.tagName === 'A' && !event.target.hasAttribute('target') && !event.target.hasAttribute('data-fancybox') && !event.target.hasAttribute('data-bs-toggle', 'modal') && !event.target.hasAttribute('data-glightbox') && !event.target.hasAttribute('data-darkbox') && !event.target.className.includes('cboxElement') ) {
+        if (event.target.href && !event.target.href.includes('tel:') && event.target.getAttribute('href') !== '#' && event.target.getAttribute('href').charAt(0) !== '#' && !event.target.href.includes('mailto:') && event.target.tagName === 'A' && !event.target.hasAttribute('target') && !event.target.hasAttribute('data-fancybox') && !event.target.hasAttribute('data-bs-toggle', 'modal') && !event.target.hasAttribute('data-glightbox') && !event.target.hasAttribute('data-darkbox') && !event.target.className.includes('cboxElement') ) {
           // Let's check for exclude links
           const isExcludeClass = this.checkExcludeLinks(event.target.className, this.options.removeUsingTargetClass);
           const isWithoutReloadExcludeClass = this.checkExcludeLinks(event.target.className, this.options.removeWithoutReloadUsingTargetClass);
@@ -122,6 +122,9 @@ class VanillaSiteSpeedBooster {
               const mainContent = doc.querySelector(`${this.options.mainClassName}`);
               const langLink = document.querySelector(`${this.options.langSwitch}`);
               mainSection.classList.add('fade');
+              const mainBody = doc.querySelector('body').getAttribute('style');
+              const menuItem = doc.querySelector('.page-header').innerHTML;
+              const menuClass = doc.querySelector('.page-header').className;
               setTimeout(() => {
                 if (mainContent) {
                   mainSection.innerHTML = mainContent.innerHTML;
@@ -133,6 +136,17 @@ class VanillaSiteSpeedBooster {
 
                 if (langLink && langLink.href && doc.querySelector(`${this.options.langSwitch}`) && doc.querySelector(`${this.options.langSwitch}`).href) {
                   langLink.href = doc.querySelector(`${this.options.langSwitch}`).href;
+                }
+
+                if (mainBody) {
+                  document.querySelector('body').style = mainBody;
+                }
+                if (menuItem) {
+                  document.querySelector('.page-header').innerHTML = menuItem;
+                }
+
+                if (menuClass) {
+                  document.querySelector('.page-header').className = menuClass;
                 }
 
                 if (this.options.enableProgressBar) {
@@ -150,10 +164,14 @@ class VanillaSiteSpeedBooster {
             }).catch((err) => {
                 console.warn(this.options.errorMsg, err);
               });
-          } else if (event.target.getAttribute('href').charAt(0) == '#') {
-            event.preventDefault();
-            window.history.pushState(null, null, event.target.getAttribute('href'));
-            document.querySelector(event.target.getAttribute('href')).scrollIntoView()
+          }
+        } else if (event.target.getAttribute('href').charAt(0) === '#') {
+          event.preventDefault();
+          window.history.pushState(null, null, event.target.getAttribute('href'));
+          if (event.target.getAttribute('href') !== '#' && document.querySelector(event.target.getAttribute('href'))) {
+            document.querySelector(event.target.getAttribute('href')).scrollIntoView();
+          } else {
+            console.warn('Please Select Proper Element ID');
           }
         }
       });
