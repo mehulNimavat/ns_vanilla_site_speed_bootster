@@ -59,7 +59,7 @@ class VanillaSiteSpeedBooster {
 
     // If user click on back button page was reload
     if (this.options.pageBackForwardReload) {
-      window.onpopstate = () => {window.location.reload();};
+      window.addEventListener('popstate', e => { window.location.reload(true)})
     }
 
     if (menuLinks.length && mainSection && !document.querySelector(`${this.options.removeUsingPageClass}`)) {
@@ -67,15 +67,19 @@ class VanillaSiteSpeedBooster {
         if (!i.hasAttribute('data-fancybox')) {
           i.addEventListener('click', (event) => {
             menuLinks.forEach((j) => {
-              j.parentElement.classList.remove('active');
+              if (j.parentElement) {
+                j.parentElement.classList.remove('active');
+              }
             });
-            event.target.parentElement.classList.add('active');
+            if (event.target.parentElement) {
+              event.target.parentElement.classList.add('active');
+            }
           });
         }
       });
 
-      document.addEventListener('click', (event) => { 
-        if (event.target.href && !event.target.href.includes('tel:') && event.target.getAttribute('href') !== '#' && event.target.getAttribute('href').charAt(0) !== '#' && !event.target.href.includes('mailto:') && event.target.tagName === 'A' && !event.target.hasAttribute('target') && !event.target.hasAttribute('data-fancybox') && !event.target.hasAttribute('data-bs-toggle', 'modal') && !event.target.hasAttribute('data-glightbox') && !event.target.hasAttribute('data-darkbox') && !event.target.className.includes('cboxElement') ) {
+      document.addEventListener('click', (event) => {
+        if (event.target.tagName === 'A' && event.target.href && !event.target.href.includes('tel:') && event.target.getAttribute('href') !== '#' && event.target.getAttribute('href').charAt(0) !== '#' && !event.target.href.includes('mailto:') && !event.target.hasAttribute('target') && !event.target.hasAttribute('data-fancybox') && !event.target.hasAttribute('data-bs-toggle', 'modal') && !event.target.hasAttribute('data-glightbox') && !event.target.hasAttribute('data-darkbox') && !event.target.className.includes('cboxElement') ) {
           // Let's check for exclude links
           const isExcludeClass = this.checkExcludeLinks(event.target.className, this.options.removeUsingTargetClass);
           const isWithoutReloadExcludeClass = this.checkExcludeLinks(event.target.className, this.options.removeWithoutReloadUsingTargetClass);
@@ -165,7 +169,7 @@ class VanillaSiteSpeedBooster {
                 console.warn(this.options.errorMsg, err);
               });
           }
-        } else if (event.target.getAttribute('href').charAt(0) === '#') {
+        } else if (event.target.tagName === 'A' && event.target.getAttribute('href').charAt(0) === '#') {
           event.preventDefault();
           window.history.pushState(null, null, event.target.getAttribute('href'));
           if (event.target.getAttribute('href') !== '#' && document.querySelector(event.target.getAttribute('href'))) {
