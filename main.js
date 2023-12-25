@@ -1,3 +1,4 @@
+import NProgress from "./nprogress.js";
 class VanillaSiteSpeedBooster {
   constructor(config) {
     this.options = {
@@ -59,7 +60,9 @@ class VanillaSiteSpeedBooster {
 
     // If user click on back button page was reload
     if (this.options.pageBackForwardReload) {
-      window.addEventListener('popstate', e => { window.location.reload(true)})
+      window.addEventListener('popstate', e => {
+        window.location.reload(true);
+      })
     }
 
     if (menuLinks.length && mainSection && !document.querySelector(`${this.options.removeUsingPageClass}`)) {
@@ -118,7 +121,13 @@ class VanillaSiteSpeedBooster {
             }
 
             const url = event.target.href;
-            window.history.pushState(null, null, url);
+            const parser = document.createElement('a');
+            parser.href = url;
+            if (window.location.hostname == parser.hostname) {
+              window.history.pushState(null, null, url);
+            } else {
+              window.location.href = url;
+            }
             fetch(url, {cache: "force-cache"}).then((response) => response.text()).then((html) => {
               /* Change Content of Main */
               const parser = new DOMParser();
